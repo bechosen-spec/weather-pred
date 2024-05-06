@@ -1,33 +1,27 @@
 import streamlit as st
 from components.header import display_header
 from components.login import handle_login
-from utilities.data_utils import load_model, make_prediction, download_link
+from utilities.data_utils import load_model, make_prediction
 
 def main():
-    # Initialize Firebase or any other setup
     st.set_page_config(page_title="Hyper Localized Weather Prediction System")
 
-    # Display header with celebration balloons
     display_header()
 
-    # Handle user authentication
     user = handle_login()
     if user is None:
         st.warning("Please login to continue.")
         return
 
-    # Layout for the main app
     location = st.sidebar.selectbox("Select Location", ["Nsukka", "Ayingba"])
     model = load_model(location)
 
     if st.sidebar.button("Sign Out"):
-        # Firebase sign out logic
         pass
 
     if st.sidebar.button("Home Page"):
         st.write("Welcome to the Hyper Localized Weather Prediction System")
 
-    # Prediction input form
     with st.form(key='prediction_form'):
         year = st.number_input('Year', min_value=2015, max_value=2025, value=2021)
         month = st.number_input('Month', min_value=1, max_value=12, value=1)
@@ -42,7 +36,7 @@ def main():
             prediction = make_prediction(model, features)
             st.write("Predicted Weather Parameters:")
             st.table(prediction)
-            csv = prediction.to_csv().encode('utf-8')
+            csv = prediction.to_csv(index=False).encode('utf-8')
             st.download_button("Download as CSV", csv, "prediction.csv", "text/csv", key='download-csv')
 
 if __name__ == "__main__":

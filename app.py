@@ -1,7 +1,8 @@
 import streamlit as st
 from components.header import display_header
 from components.login import handle_login, handle_signup, init_firebase
-from utilities.data_utils import load_model, make_prediction
+from utilities.data_utils import load_models, predict_rf  # Updated function names
+import numpy as np  # For handling feature array
 
 # Initialize Firebase Admin at the start of your app
 init_firebase()
@@ -48,7 +49,7 @@ def main():
     # Main app interface after login
     if st.session_state.logged_in:
         location = st.sidebar.selectbox("Select Location", ["Nsukka", "Ayingba"])
-        model = load_model(location)
+        models = load_models(location)
 
         # Home page button
         if st.sidebar.button("Home Page"):
@@ -65,8 +66,8 @@ def main():
             submit_button = st.form_submit_button(label='Predict')
 
             if submit_button:
-                features = [year, month, day, day_of_week, week_of_year, quarter]
-                prediction = make_prediction(model, features)
+                features = np.array([[year, month, day, day_of_week, week_of_year, quarter]])
+                prediction = predict_rf(models, features)  # Call the RF prediction function
                 st.write("Predicted Weather Parameters:")
                 st.table(prediction)
                 csv = prediction.to_csv(index=False).encode('utf-8')

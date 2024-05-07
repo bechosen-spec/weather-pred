@@ -1,8 +1,8 @@
 import streamlit as st
+import numpy as np
 from components.header import display_header
 from components.login import handle_login, handle_signup, init_firebase
-from utilities.data_utils import load_models, predict_rf  # Updated function names
-import numpy as np  # For handling feature array
+from utilities.data_utils import load_models, predict_rf  # Ensure these names match your utilities script
 
 # Initialize Firebase Admin at the start of your app
 init_firebase()
@@ -13,13 +13,13 @@ def main():
     # Display the header of the application
     display_header()
 
-    # Ensure session state initialization for 'logged_in' and 'view'
+    # Session state initialization for 'logged_in' and 'view'
     if 'logged_in' not in st.session_state:
         st.session_state['logged_in'] = None
     if 'view' not in st.session_state:
         st.session_state['view'] = 'login'  # Default view
 
-    # Handle user navigation between login and signup
+    # Navigation between login and signup
     if st.session_state.logged_in is None:
         if st.session_state.view == 'signup':
             user = handle_signup()
@@ -46,16 +46,12 @@ def main():
             st.session_state.view = 'login'
             st.experimental_rerun()
 
-    # Main app interface after login
+    # App interface after login
     if st.session_state.logged_in:
         location = st.sidebar.selectbox("Select Location", ["Nsukka", "Ayingba"])
-        models = load_models(location)
+        models = load_models(location)  # Load models based on the selected location
 
-        # Home page button
-        if st.sidebar.button("Home Page"):
-            st.write(f"Welcome to the Hyper Localized Weather Prediction System, {st.session_state.username}!")
-
-        # Form for making predictions
+        # Prediction form
         with st.form(key='prediction_form'):
             year = st.number_input('Year', min_value=2015, max_value=2025, value=2021)
             month = st.number_input('Month', min_value=1, max_value=12, value=1)
@@ -67,7 +63,7 @@ def main():
 
             if submit_button:
                 features = np.array([[year, month, day, day_of_week, week_of_year, quarter]])
-                prediction = predict_rf(models, features)  # Call the RF prediction function
+                prediction = predict_rf(models, features)
                 st.write("Predicted Weather Parameters:")
                 st.table(prediction)
                 csv = prediction.to_csv(index=False).encode('utf-8')

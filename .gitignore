@@ -1,0 +1,13 @@
+# Firebase private key
+firebase-key.json
+
+# Environment variables
+.wpenv
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Streamlit app state
+.streamlit/

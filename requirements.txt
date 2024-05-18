@@ -4,3 +4,4 @@ numpy==1.26.4
 scikit-learn==1.2.2
 firebase-admin==6.5.0
 joblib==1.4.2
+plotly==5.15.0

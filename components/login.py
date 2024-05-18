@@ -5,7 +5,7 @@ import streamlit as st
 # Initialize Firebase Admin SDK
 def init_firebase():
     if not firebase_admin._apps:
-        cred_path = "/weather-forecast-e6321-firebase-adminsdk-gvb72-5a12750ba5.json"
+        cred_path = "weather-forecast-e6321-firebase-adminsdk-gvb72-5a12750ba5.json"
         cred = credentials.Certificate(cred_path)
         firebase_admin.initialize_app(cred)
 

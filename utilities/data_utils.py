@@ -14,7 +14,7 @@ def load_models(location):
     models = {}
     targets = location_targets[location]
     for target in targets:
-        models[target] = joblib.load(f'/Models/{location}/{target}_random_forest_model.joblib')
+        models[target] = joblib.load(f'Models/{location}/{target}_random_forest_model.joblib')
     return models
 
 # RF prediction function

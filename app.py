@@ -448,7 +448,21 @@ def display_prediction_results(date, models):
     features = np.array([[year, month, day, day_of_week, week_of_year, quarter]])
     prediction = predict_rf(models, features)
     prediction_date = date.strftime("%Y-%m-%d")
-    data = [(param, value, prediction_date) for param, value in prediction.items()]
+    
+    # Units for each weather parameter
+    units = {
+        'Air Temperature': '°C',
+        'Barometric Pressure': 'mbar',
+        'Rain Rate': 'mm',
+        'Relative Humidity': '%',
+        'Soil Temperature': '°C',
+        'Solar Radiation': 'w/m²',
+        'Wind Direction': '°',
+        'Wind Speed': 'm/s',
+        'Soil Volumetric Water Content': ''
+    }
+    
+    data = [(param, f"{value} {units[param]}", prediction_date) for param, value in prediction.items()]
     results_df = pd.DataFrame(data, columns=['Weather Parameters', 'Predicted Values', 'Date'])
     return results_df
 
@@ -467,7 +481,8 @@ def generate_weekly_predictions(start_date, models):
         features = np.array([[year, month, day, day_of_week, week_of_year, quarter]])
         prediction = predict_rf(models, features)
         for param, value in prediction.items():
-            all_predictions.append({'Date': date.strftime("%Y-%m-%d"), 'Weather Parameter': param, 'Predicted Value': value})
+            unit = units[param]
+            all_predictions.append({'Date': date.strftime("%Y-%m-%d"), 'Weather Parameter': param, 'Predicted Value': f"{value} {unit}"})
 
     weekly_predictions_df = pd.DataFrame(all_predictions)
     return weekly_predictions_df

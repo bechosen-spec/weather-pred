@@ -6,7 +6,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from components.header import display_header
 from components.login import handle_login, handle_signup, init_firebase
-from utilities.data_utils import load_models, predict_rf
+from utilities.data_utils import load_models, predict_rf, parameter_display_mapping
 
 # Initialize Firebase Admin at the start of your app
 init_firebase()
@@ -24,19 +24,6 @@ if 'prediction_data' not in st.session_state:
     st.session_state.prediction_data = None
 if 'weekly_prediction_data' not in st.session_state:
     st.session_state.weekly_prediction_data = None
-
-# Mapping of original parameter names to display names with units
-parameter_display_mapping = {
-    'AirTemp_Avg': 'Air Temperature (°C)',
-    'BarPress_Avg': 'Barometric Pressure (mbar)',
-    'Rainfallrate_mm_Tot': 'Rain Rate (mm)',
-    'RelativeHumidity': 'Relative Humidity (%)',
-    'SoilTemp_Avg': 'Soil Temperature (°C)',
-    'SolarRadiation_Avg': 'Solar Radiation (w/m²)',
-    'WindDir': 'Wind Direction (°)',
-    'WindSpeed_Avg': 'Wind Speed (m/s)',
-    'SoilMoisture': 'Soil Volumetric Water Content'
-}
 
 def main():
     st.set_page_config(page_title="Hyper Localized Weather Prediction System")
@@ -212,7 +199,7 @@ def display_prediction_results(date, models):
     prediction = predict_rf(models, features)
     prediction_date = date.strftime("%Y-%m-%d")
     
-    data = [(parameter_display_mapping[param], f"{value}", prediction_date) for param, value in prediction.items()]
+    data = [(parameter_display_mapping.get(param, param), f"{value}", prediction_date) for param, value in prediction.items()]
     results_df = pd.DataFrame(data, columns=['Weather Parameters', 'Predicted Values', 'Date'])
     return results_df
 

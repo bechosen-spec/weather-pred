@@ -252,6 +252,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
+import plotly.express as px
 import plotly.graph_objects as go
 from components.header import display_header
 from components.login import handle_login, handle_signup, init_firebase
@@ -389,7 +390,7 @@ def signup_page():
             st.experimental_rerun()
 
 def predictions_page():
-    st.session_state.location = st.selectbox("Select Location", ["Nsukka", "Anyigba"])
+    st.session_state.location = st.selectbox("Select Location", ["Nsukka", "Ayingba"])
     with st.form(key='prediction_form'):
         date = st.date_input('Select Date', datetime.now())
         submit_button = st.form_submit_button(label='Predict')
@@ -428,8 +429,9 @@ def display_prediction_table(data):
 def handle_predictions(date):
     models = load_models(st.session_state.location)
     results_df = display_prediction_results(date, models)
+    results_df['Location'] = st.session_state.location  # Add location to the results dataframe
     st.session_state.prediction_data = results_df
-    st.session_state.predictions_history.append((results_df, st.session_state.location))
+    st.session_state.predictions_history.append(results_df)
 
     # Generate weekly predictions
     weekly_predictions = generate_weekly_predictions(date, models)
@@ -446,23 +448,9 @@ def display_prediction_results(date, models):
     features = np.array([[year, month, day, day_of_week, week_of_year, quarter]])
     prediction = predict_rf(models, features)
     prediction_date = date.strftime("%Y-%m-%d")
-    data = [(param, f"{value} {get_unit(param)}", prediction_date) for param, value in prediction.items()]
+    data = [(param, value, prediction_date) for param, value in prediction.items()]
     results_df = pd.DataFrame(data, columns=['Weather Parameters', 'Predicted Values', 'Date'])
     return results_df
-
-def get_unit(parameter):
-    units = {
-        'Air Temperature': '°C',
-        'Atmospheric Pressure': 'mbar',
-        'Rainfall Rate': 'mm',
-        'Relative Humidity': '%',
-        'Soil Temperature': '°C',
-        'Solar Radiation': 'w/m²',
-        'Wind Direction': '°',
-        'Wind Speed': 'm/s',
-        'Soil Moisture': 'vol. %'
-    }
-    return units.get(parameter, '')
 
 def generate_weekly_predictions(start_date, models):
     dates = [start_date + timedelta(days=i) for i in range(7)]
@@ -479,7 +467,7 @@ def generate_weekly_predictions(start_date, models):
         features = np.array([[year, month, day, day_of_week, week_of_year, quarter]])
         prediction = predict_rf(models, features)
         for param, value in prediction.items():
-            all_predictions.append({'Date': date.strftime("%Y-%m-%d"), 'Weather Parameter': param, 'Predicted Value': f"{value} {get_unit(param)}"})
+            all_predictions.append({'Date': date.strftime("%Y-%m-%d"), 'Weather Parameter': param, 'Predicted Value': value})
 
     weekly_predictions_df = pd.DataFrame(all_predictions)
     return weekly_predictions_df
@@ -491,8 +479,8 @@ def plot_weekly_predictions(weekly_data):
 
 def history_page():
     st.markdown("<h2 style='text-align: center; color: white;'>Prediction History</h2>", unsafe_allow_html=True)
-    for i, (df, location) in enumerate(st.session_state.predictions_history):
-        st.write(f"Prediction {i+1} for {location}")
+    for i, df in enumerate(st.session_state.predictions_history):
+        st.write(f"Prediction {i+1} for {df['Location'].iloc[0]}")
         display_prediction_table(df)
         if st.button(f'Delete Prediction {i+1}'):
             del st.session_state.predictions_history[i]

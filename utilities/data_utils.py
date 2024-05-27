@@ -9,6 +9,20 @@ location_targets = {
                'SoilTemp_Avg', 'SolarRadiationr_Avg', 'WindDir', 'WindSpeed_Avg', 'SoilMoisture']
 }
 
+# Mapping of original parameter names to display names with units
+parameter_display_mapping = {
+    'AirTemp_Avg': 'Air Temperature (°C)',
+    'BarPress_Avg': 'Barometric Pressure (mbar)',
+    'Rainfallrate_mm_Tot': 'Rain Rate (mm)',
+    'RelativeHumidity': 'Relative Humidity (%)',
+    'SoilTemp_Avg': 'Soil Temperature (°C)',
+    'SolarRadiation_Avg': 'Solar Radiation (w/m²)',
+    'SolarRadiationr_Avg': 'Solar Radiation (w/m²)',  # Correct the name here to match the display
+    'WindDir': 'Wind Direction (°)',
+    'WindSpeed_Avg': 'Wind Speed (m/s)',
+    'SoilMoisture': 'Soil Volumetric Water Content'
+}
+
 # Function to load RF models for a specific location
 def load_models(location):
     models = {}

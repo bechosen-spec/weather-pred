@@ -3,7 +3,7 @@ import joblib
 
 # Define location-specific targets
 location_targets = {
-    'Anyigba': ['AirTemp_Avg', 'BarPress_Avg', 'Rainfallrate_mm_Tot', 'RelativeHumidity',
+    'Ayingba': ['AirTemp_Avg', 'BarPress_Avg', 'Rainfallrate_mm_Tot', 'RelativeHumidity',
                 'SoilTemp_Avg', 'SolarRadiation_Avg', 'WindDir', 'WindSpeed_Avg', 'SoilMoisture'],
     'Nsukka': ['AirTemp_Avg', 'BarPress_Avg', 'Rainfallrate_mm_Tot', 'RelativeHumidity',
                'SoilTemp_Avg', 'SolarRadiationr_Avg', 'WindDir', 'WindSpeed_Avg', 'SoilMoisture']
@@ -11,7 +11,7 @@ location_targets = {
 
 # Mapping of original parameter names to display names with units
 parameter_display_mapping = {
-    'Anyigba': {
+    'Ayingba': {
         'AirTemp_Avg': 'Air Temperature (°C)',
         'BarPress_Avg': 'Barometric Pressure (mbar)',
         'Rainfallrate_mm_Tot': 'Rainfall Rate (mm)',

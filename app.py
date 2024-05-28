@@ -140,7 +140,7 @@ def signup_page():
             st.experimental_rerun()
 
 def predictions_page():
-    st.session_state.location = st.selectbox("Select Location", ["Nsukka", "Ayingba"])
+    st.session_state.location = st.selectbox("Select Location", ["Nsukka", "Anyigba"])
     with st.form(key='prediction_form'):
         date = st.date_input('Select Date', datetime.now())
         submit_button = st.form_submit_button(label='Predict')
@@ -199,7 +199,7 @@ def display_prediction_results(date, models):
     prediction = predict_rf(models, features)
     prediction_date = date.strftime("%Y-%m-%d")
     
-    data = [(parameter_display_mapping.get(param, param), f"{value}", prediction_date) for param, value in prediction.items()]
+    data = [(parameter_display_mapping[st.session_state.location].get(param, param), f"{value}", prediction_date) for param, value in prediction.items()]
     results_df = pd.DataFrame(data, columns=['Weather Parameters', 'Predicted Values', 'Date'])
     return results_df
 
@@ -218,7 +218,7 @@ def generate_weekly_predictions(start_date, models):
         features = np.array([[year, month, day, day_of_week, week_of_year, quarter]])
         prediction = predict_rf(models, features)
         for param, value in prediction.items():
-            display_name = parameter_display_mapping.get(param, param)
+            display_name = parameter_display_mapping[st.session_state.location].get(param, param)
             all_predictions.append({'Date': date.strftime("%Y-%m-%d"), 'Weather Parameter': display_name, 'Predicted Value': f"{value}"})
 
     weekly_predictions_df = pd.DataFrame(all_predictions)

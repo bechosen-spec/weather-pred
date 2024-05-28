@@ -140,7 +140,7 @@ def signup_page():
             st.experimental_rerun()
 
 def predictions_page():
-    st.session_state.location = st.selectbox("Select Location", ["Nsukka", "Anyigba"])
+    st.session_state.location = st.selectbox("Select Location", ["Nsukka", "Ayingba"])
     with st.form(key='prediction_form'):
         date = st.date_input('Select Date', datetime.now())
         submit_button = st.form_submit_button(label='Predict')
